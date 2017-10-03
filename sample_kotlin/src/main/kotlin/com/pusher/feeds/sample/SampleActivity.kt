@@ -26,20 +26,21 @@ class SampleActivity : AppCompatActivity() {
 
         )
 
-        val feed = feeds.feed("my-feed")
-//        feed.subscribe(
-//                FeedSubscriptionListeners(
-//                        onOpen = { headers -> Log.d(TAG, "onOpen: $headers")},
-//                        onItem = { item -> Log.d(TAG, "$item")},
-//                        onError = { error -> Log.d(TAG, "$error")}
-//                )
-//        )
+        val feed = feeds.feed("private-my-feed")
 
-
-        feeds.list(
-                onSuccess = { feeds -> Log.d(TAG, "FEEDS! $feeds") },
-                onFailure = { error -> Log.d(TAG, "$error")}
+        feed.subscribe(
+                FeedSubscriptionListeners(
+                        onOpen = { headers -> Log.d(TAG, "onOpen: $headers") },
+                        onItem = { item -> Log.d(TAG, "$item") },
+                        onError = { error -> Log.d(TAG, "$error") }
+                )
         )
+
+
+//        feeds.list(
+//                onSuccess = { feeds -> Log.d(TAG, "FEEDS! $feeds") },
+//                onFailure = { error -> Log.d(TAG, "$error")}
+//        )
 
 
 

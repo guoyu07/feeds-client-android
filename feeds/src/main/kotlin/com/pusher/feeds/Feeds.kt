@@ -3,12 +3,11 @@ package com.pusher.feeds
 import android.content.Context
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
-import com.pusher.platform.Cancelable
 import com.pusher.platform.Instance
 import com.pusher.platform.RequestOptions
-import com.pusher.platform.SubscriptionListeners
 import com.pusher.platform.logger.AndroidLogger
 import com.pusher.platform.logger.LogLevel
+import com.pusher.platform.tokenProvider.TokenProvider
 import elements.*
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
@@ -36,9 +35,13 @@ class Feeds(
             context = context
     )
 
-    //TODO: not private yet.
-    fun feed(feedId: String): Feed{
-        return Feed(id = feedId, instance = instance)
+    fun feed(feedId: String): Feed {
+
+        val feedTokenProvider: FeedsTokenProvider? =
+                if(feedId.startsWith("private-")) createTokenProvider()
+                else null
+
+        return Feed(id = feedId, instance = instance, tokenProvider = feedTokenProvider)
     }
 
     private fun createTokenProvider(): FeedsTokenProvider? =
@@ -85,66 +88,8 @@ class Feeds(
                 onFailure = onFailure
         )
     }
-
-//    val firehoseTokenProvider = FeedsTokenProvider()
-
-    fun firehose(
-            onPublish: (SubscriptionEvent) -> Unit,
-            onSubscribe: (SubscriptionEvent) -> Unit,
-            onUnsubscribe: (SubscriptionEvent) -> Unit
-    ): Cancelable {
-
-        TODO()
-    }
-
 }
 
-data class FeedSubscriptionListeners(
-        val onOpen: (Headers) -> Unit,
-        val onItem: (FeedItem) -> Unit,
-        val onError: (Error) -> Unit = {},
-        val onEnd: (EOSEvent?) -> Unit = {},
-        val onRetrying: () -> Unit = {},
-        val onSubscribed: () -> Unit = {}
-)
-
-
-class Feed(val id: String, val instance: Instance) {
-
-    var subscription: Subscription? = null
-
-    fun subscribe(listeners: FeedSubscriptionListeners, lastEventId: String? = null, previousItems: Int? =
- null) {
-
-        val query = if(previousItems != null) "?previous_items=$previousItems" else ""
-
-        subscription = instance.subscribeResuming(
-                path = "feeds/$id/items$query",
-                listeners = SubscriptionListeners(
-                        onOpen = listeners.onOpen,
-                        onError = listeners.onError,
-                        onEnd =  listeners.onEnd,
-                        onRetrying = listeners.onRetrying,
-                        onSubscribe = listeners.onSubscribed,
-
-                        onEvent = { event ->
-                            val type = event.body.asJsonObject["type"].asInt
-                            if(type == 1){
-                                val item = Feeds.GSON.fromJson(event.body.asJsonObject["data"], FeedItem::class.java)
-                                listeners.onItem(item)
-                            }
-                        }
-                ),
-                initialEventId = lastEventId
-        )
-    }
-
-    fun unsubscribe(){
-        subscription?.unsubscribe()
-    }
-}
-
-data class FeedItem(val id: String, val created: Long, val data: Any)
 
 data class FeedEvent(val type: Int, val data: EventData)
 
