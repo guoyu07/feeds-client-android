@@ -10,11 +10,9 @@ import com.pusher.platform.RequestOptions
 import com.pusher.platform.SubscriptionListeners
 import com.pusher.platform.logger.AndroidLogger
 import com.pusher.platform.logger.LogLevel
-import com.pusher.platform.tokenProvider.TokenProvider
 import elements.*
-import okhttp3.HttpUrl
-import okhttp3.OkHttpClient
 import okhttp3.Response
+import java.util.*
 
 class Feeds(
         val instanceId: String,
@@ -148,16 +146,3 @@ data class PublishEvent(
 
 data class SubscribeEvent(val feedId: String, val subscriberId: String): EventData()
 
-class FeedsTokenProvider: TokenProvider {
-
-
-
-    override fun fetchToken(tokenParams: Any?, onSuccess: (String) -> Unit, onFailure: (Error) -> Unit): Cancelable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun clearToken(token: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-}
