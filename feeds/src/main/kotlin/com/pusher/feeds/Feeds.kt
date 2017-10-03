@@ -2,7 +2,6 @@ package com.pusher.feeds
 
 import android.content.Context
 import com.google.gson.FieldNamingPolicy
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.pusher.platform.Cancelable
 import com.pusher.platform.Instance
@@ -11,16 +10,17 @@ import com.pusher.platform.SubscriptionListeners
 import com.pusher.platform.logger.AndroidLogger
 import com.pusher.platform.logger.LogLevel
 import elements.*
-import okhttp3.Response
-import java.util.*
+import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
 
 class Feeds(
         val instanceId: String,
         val authEndpoint: String? = null,
-        val authData: Any? = null,
+        val authData: Map<String, String> = emptyMap(),
         val logLevel: LogLevel = LogLevel.DEBUG,
         val context: Context
 ) {
+    val httpClient = OkHttpClient()
 
     companion object {
         val GSON = GsonBuilder()
@@ -41,37 +41,52 @@ class Feeds(
         return Feed(id = feedId, instance = instance)
     }
 
+    private fun createTokenProvider(): FeedsTokenProvider? =
+            if(authEndpoint != null) FeedsTokenProvider(
+                endpoint = authEndpoint,
+                client = httpClient,
+                authData = authData
+            ) else null
 
-    //TODO:
+    data class FeedsListItem(val feedId: String, val length: Int)
 
     fun list(
             prefix: String? = null,
-            limit: Int = -1,
+            limit: Int? = null,
             onSuccess: (List<FeedsListItem>) -> Unit,
             onFailure: (elements.Error) -> Unit){
 
-        val instanceSuccessCallback: (Response) -> Unit = {
-            response ->
-                if (response.code() == 200){
-                    val body = Gson().fromJson<List<FeedsListItem>>(response.body()!!.charStream(), List::class.java)
-                    onSuccess(body)
-                }
-        }
-
-
+        var urlBuilder = HttpUrl.Builder().scheme("https").host("pusherplatform.io")
+        if(prefix != null) urlBuilder.addQueryParameter("prefix", prefix)
+        if(limit != null) urlBuilder.addQueryParameter("limit", limit.toString())
 
         instance.request(
                 options = RequestOptions(
                         method = "GET",
-                        path = "feeds"
+                        path = "/feeds${ urlBuilder.build().encodedQuery() ?: "" }"
                 ),
-                tokenProvider = null, //TODO
-                onSuccess =  instanceSuccessCallback,
+                tokenProvider = createTokenProvider(),
+                tokenParams = FeedsTokenParams(
+                        path = "feeds",
+                        action = "READ"
+                ),
+                onSuccess =  { response ->
+                    if(response.code() == 200){
+                        onSuccess(GSON.fromJson<List<FeedsListItem>>(response.body()!!.charStream(), List::class.java))
+                    }
+                    else{
+                        onFailure(ErrorResponse(
+                                statusCode = response.code(),
+                                headers = response.headers().toMultimap(),
+                                error = "${response.body()}"
+                        ))
+                    }
+                },
                 onFailure = onFailure
         )
-
-        TODO()
     }
+
+//    val firehoseTokenProvider = FeedsTokenProvider()
 
     fun firehose(
             onPublish: (SubscriptionEvent) -> Unit,
@@ -130,8 +145,6 @@ class Feed(val id: String, val instance: Instance) {
 }
 
 data class FeedItem(val id: String, val created: Long, val data: Any)
-
-data class FeedsListItem(val feedId: String, val length: Int)
 
 data class FeedEvent(val type: Int, val data: EventData)
 

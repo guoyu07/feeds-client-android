@@ -21,16 +21,27 @@ class SampleActivity : AppCompatActivity() {
         val feeds = Feeds(
                 instanceId = INSTANCE_ID,
                 context = this,
-                logLevel = LogLevel.VERBOSE
+                logLevel = LogLevel.VERBOSE,
+                authEndpoint = "http://10.0.2.2:3000/path/tokens"
+
         )
 
         val feed = feeds.feed("my-feed")
-        feed.subscribe(
-                FeedSubscriptionListeners(
-                        onOpen = { headers -> Log.d(TAG, "onOpen: $headers")},
-                        onItem = { item -> Log.d(TAG, "$item")},
-                        onError = { error -> Log.d(TAG, "$error")}
-                )
+//        feed.subscribe(
+//                FeedSubscriptionListeners(
+//                        onOpen = { headers -> Log.d(TAG, "onOpen: $headers")},
+//                        onItem = { item -> Log.d(TAG, "$item")},
+//                        onError = { error -> Log.d(TAG, "$error")}
+//                )
+//        )
+
+
+        feeds.list(
+                onSuccess = { feeds -> Log.d(TAG, "FEEDS! $feeds") },
+                onFailure = { error -> Log.d(TAG, "$error")}
         )
+
+
+
     }
 }
