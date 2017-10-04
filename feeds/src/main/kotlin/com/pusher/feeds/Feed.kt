@@ -35,11 +35,11 @@ class Feed(val id: String, val instance: Instance, val tokenProvider: FeedsToken
         subscription = instance.subscribeResuming(
                 path = "feeds/$id/items$query",
                 listeners = SubscriptionListeners(
-                        onOpen = { headers -> listeners.onOpen.onOpen(headers)},
-                        onError = listeners.onError,
-                        onEnd = listeners.onEnd,
-                        onRetrying = listeners.onRetrying,
-                        onSubscribe = listeners.onSubscribed,
+                        onOpen = { listeners.onOpen.onOpen(it)},
+                        onError = {listeners.onError.onError(it)},
+                        onEnd = { listeners.onEnd.onEnd(it)},
+                        onRetrying = { listeners.onRetrying.onRetrying() },
+                        onSubscribe = { listeners.onSubscribed.onSubscribed() },
                         onEvent = { event ->
                             val type = event.body.asJsonObject["type"].asInt
                             if (type == 1) {
@@ -123,10 +123,10 @@ class Feed(val id: String, val instance: Instance, val tokenProvider: FeedsToken
 data class FeedSubscriptionListeners(
         val onOpen: OnOpenListener,
         val onItem: OnItemListener,
-        val onError: OnErrorListener,
-        val onEnd: OnEndListener,
-        val onRetrying: OnRetryingListener,
-        val onSubscribed: OnSubscribedListener
+        val onError: OnErrorListener = OnErrorListener {  },
+        val onEnd: OnEndListener = OnEndListener {  },
+        val onRetrying: OnRetryingListener = OnRetryingListener {  },
+        val onSubscribed: OnSubscribedListener = OnSubscribedListener {  }
 )
 
 /**
