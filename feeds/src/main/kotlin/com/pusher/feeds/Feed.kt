@@ -6,6 +6,7 @@ import com.pusher.platform.RequestOptions
 import com.pusher.platform.SubscriptionListeners
 import elements.*
 import okhttp3.HttpUrl
+import java.util.*
 
 /**
  * A single feed. Allows subscribing, unsubscribing, and paginating items already in the feed. Create using the Feeds.feed
@@ -15,11 +16,13 @@ import okhttp3.HttpUrl
  * */
 class Feed
     @JvmOverloads constructor(
-        val id: String,
-        val instance: Instance,
-        val tokenProvider: FeedsTokenProvider? = null) {
+        private val id: String,
+        private val instance: Instance,
+        private val tokenProvider: FeedsTokenProvider? = null) {
 
-    var subscription: Subscription? = null
+    private var subscription: Subscription? = null
+    private var openHeaders: Headers = TreeMap()
+    var openedForTheFirstTime: Boolean = false
 
     /**
      * Subscribe to this feed. If a connection is interrupted it will retry subscribing from the last known item.
@@ -42,17 +45,28 @@ class Feed
         subscription = instance.subscribeResuming(
                 path = "feeds/$id/items$query",
                 listeners = SubscriptionListeners(
-                        onOpen = { listeners.onOpen.onOpen(it)},
+                        onOpen = { openHeaders = it },
                         onError = {listeners.onError.onError(it)},
                         onEnd = { listeners.onEnd.onEnd(it)},
                         onRetrying = { listeners.onRetrying.onRetrying() },
                         onSubscribe = { listeners.onSubscribed.onSubscribed() },
                         onEvent = { event ->
                             val type = event.body.asJsonObject["type"].asInt
+
+                            //Open subtype
+                            if( type == 0 && !openedForTheFirstTime){
+                                openedForTheFirstTime = true
+
+                                val openEvent = Feeds.GSON.fromJson(event.body.asJsonObject["data"], FeedOpenEvent::class.java)
+                                openHeaders.put("next_cursor", listOf(openEvent.nextCursor))
+                                openHeaders.put("remaining", listOf(openEvent.remaining.toString()))
+                                listeners.onOpen.onOpen(openHeaders)
+                            }
                             if (type == 1) {
                                 val item = Feeds.GSON.fromJson(event.body.asJsonObject["data"], FeedItem::class.java)
                                 listeners.onItem.onItem(item)
                             }
+
                         }
                 ),
                 tokenProvider = tokenProvider,
@@ -60,6 +74,8 @@ class Feed
                 initialEventId = lastEventId
         )
     }
+
+    private data class FeedOpenEvent(val nextCursor: String, val remaining: Int)
 
     /**
      * Cancel the current subscription, if any.
