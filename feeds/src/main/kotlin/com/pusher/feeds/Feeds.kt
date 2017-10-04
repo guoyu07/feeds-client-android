@@ -7,11 +7,18 @@ import com.pusher.platform.Instance
 import com.pusher.platform.RequestOptions
 import com.pusher.platform.logger.AndroidLogger
 import com.pusher.platform.logger.LogLevel
-import com.pusher.platform.tokenProvider.TokenProvider
 import elements.*
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 
+/**
+ * Main entry point for the Pusher Feeds client SDK.
+ * @param instanceId - the main configuration value for Feeds. Get it from the dashboard dash.pusher.com.
+ * @param authEndpoint - path to your deployed authentication endpoint.
+ * @param authData extra parameters that will be sent to your authentication service.
+ * @param context your Android Application context. Used to detect and react to changes in connectivity when subscribing to a feed.
+ * @param logLevel the default logging level.
+ * */
 class Feeds(
         val instanceId: String,
         val authEndpoint: String? = null,
@@ -35,6 +42,10 @@ class Feeds(
             context = context
     )
 
+    /**
+     * Create a new Feed with a given ID.
+     * @param feedId the ID of your feed. Private feeds start with `private-` prefix
+     * */
     fun feed(feedId: String): Feed {
 
         val feedTokenProvider: FeedsTokenProvider? =
@@ -53,6 +64,13 @@ class Feeds(
 
     data class FeedsListItem(val feedId: String, val length: Int)
 
+    /**
+     * List all feeds associated to this instance.
+     * @param prefix filters the response and only retrieves feeds with a given prefix
+     * @param limit maximum number of feeds to return
+     * @param onSuccess callback
+     * @param onFailure callback
+     * */
     fun list(
             prefix: String? = null,
             limit: Int? = null,
@@ -89,18 +107,3 @@ class Feeds(
         )
     }
 }
-
-
-data class FeedEvent(val type: Int, val data: EventData)
-
-sealed class EventData
-
-data class PublishEvent(
-        val feedId: String,
-        val itemId: String,
-        val created: String,
-        val data: Any
-): EventData()
-
-data class SubscribeEvent(val feedId: String, val subscriberId: String): EventData()
-

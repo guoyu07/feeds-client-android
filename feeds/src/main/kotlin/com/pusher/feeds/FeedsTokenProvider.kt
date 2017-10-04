@@ -8,7 +8,13 @@ import elements.NetworkError
 import okhttp3.*
 import java.io.IOException
 
-
+/**
+ * Simple token provider for Feeds. Uses an in-memory cache for storing token. Use one per feed / request.
+ * @param endpoint location of this token provider.
+ * @param authData data to be sent alongside each request to the token providing endpoint.
+ * @param client
+ * @param tokenCache
+ * */
 class FeedsTokenProvider(
         val endpoint: String,
         val authData: Map<String, String> = emptyMap(),
