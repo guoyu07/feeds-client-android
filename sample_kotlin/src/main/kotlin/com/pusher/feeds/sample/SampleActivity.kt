@@ -3,9 +3,10 @@ package com.pusher.feeds.sample
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.pusher.feeds.FeedSubscriptionListeners
-import com.pusher.feeds.Feeds
-import com.pusher.feeds.R
+import com.pusher.feeds.*
+import com.pusher.feeds.listeners.OnErrorListener
+import com.pusher.feeds.listeners.OnItemListener
+import com.pusher.feeds.listeners.OnOpenListener
 import com.pusher.platform.logger.LogLevel
 
 class SampleActivity : AppCompatActivity() {
@@ -27,19 +28,19 @@ class SampleActivity : AppCompatActivity() {
 
         val feed = feeds.feed("private-my-feed")
 
-//        feed.subscribe(
-//                FeedSubscriptionListeners(
-//                        onOpen = { headers -> Log.d(TAG, "onOpen: $headers") },
-//                        onItem = { item -> Log.d(TAG, "$item") },
-//                        onError = { error -> Log.d(TAG, "$error") }
-//                )
-//        )
+        feed.subscribe(
+                FeedSubscriptionListeners(
+                        onOpen = OnOpenListener { headers -> Log.d(TAG, "onOpen: $headers") },
+                        onItem = OnItemListener { item -> Log.d(TAG, "$item") },
+                        onError = OnErrorListener { error -> Log.d(TAG, "$error") }
+                )
+        )
 
 
-//        feeds.list(
-//                onSuccess = { feeds -> Log.d(TAG, "FEEDS! $feeds") },
-//                onFailure = { error -> Log.d(TAG, "$error")}
-//        )
+        feeds.list(
+                onSuccess = { feeds -> Log.d(TAG, "FEEDS! $feeds") },
+                onFailure = { error -> Log.d(TAG, "$error")}
+        )
 
         feed.paginate(
                 onSuccess = { feeds -> Log.d(TAG, "All the feed items! $feeds") },

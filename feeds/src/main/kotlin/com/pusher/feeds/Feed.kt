@@ -1,5 +1,6 @@
 package com.pusher.feeds
 
+import com.pusher.feeds.listeners.*
 import com.pusher.platform.Instance
 import com.pusher.platform.RequestOptions
 import com.pusher.platform.SubscriptionListeners
@@ -34,7 +35,7 @@ class Feed(val id: String, val instance: Instance, val tokenProvider: FeedsToken
         subscription = instance.subscribeResuming(
                 path = "feeds/$id/items$query",
                 listeners = SubscriptionListeners(
-                        onOpen = listeners.onOpen,
+                        onOpen = { headers -> listeners.onOpen.onOpen(headers)},
                         onError = listeners.onError,
                         onEnd = listeners.onEnd,
                         onRetrying = listeners.onRetrying,
@@ -43,7 +44,7 @@ class Feed(val id: String, val instance: Instance, val tokenProvider: FeedsToken
                             val type = event.body.asJsonObject["type"].asInt
                             if (type == 1) {
                                 val item = Feeds.GSON.fromJson(event.body.asJsonObject["data"], FeedItem::class.java)
-                                listeners.onItem(item)
+                                listeners.onItem.onItem(item)
                             }
                         }
                 ),
@@ -109,6 +110,7 @@ class Feed(val id: String, val instance: Instance, val tokenProvider: FeedsToken
     }
 }
 
+
 /**
  * Feed subscription listeners.
  * @param onOpen called when the feed is first subscribed. Mandatory.
@@ -119,12 +121,12 @@ class Feed(val id: String, val instance: Instance, val tokenProvider: FeedsToken
  * @param onSubscribed called when the feed has successfully opened a subscription. Can be used to update connection status. Optional
  * */
 data class FeedSubscriptionListeners(
-        val onOpen: (Headers) -> Unit,
-        val onItem: (FeedItem) -> Unit,
-        val onError: (Error) -> Unit = {},
-        val onEnd: (EOSEvent?) -> Unit = {},
-        val onRetrying: () -> Unit = {},
-        val onSubscribed: () -> Unit = {}
+        val onOpen: OnOpenListener,
+        val onItem: OnItemListener,
+        val onError: OnErrorListener,
+        val onEnd: OnEndListener,
+        val onRetrying: OnRetryingListener,
+        val onSubscribed: OnSubscribedListener
 )
 
 /**
