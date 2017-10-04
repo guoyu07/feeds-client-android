@@ -13,7 +13,11 @@ import okhttp3.HttpUrl
  * @param instance current Pusher Platform instance
  * @param tokenProvider the source of tokens
  * */
-class Feed(val id: String, val instance: Instance, val tokenProvider: FeedsTokenProvider? = null) {
+class Feed
+    @JvmOverloads constructor(
+        val id: String,
+        val instance: Instance,
+        val tokenProvider: FeedsTokenProvider? = null) {
 
     var subscription: Subscription? = null
 
@@ -23,7 +27,10 @@ class Feed(val id: String, val instance: Instance, val tokenProvider: FeedsToken
      * @param lastEventId last known event ID you wish the items to be retrieved from. Takes priority over previousItems argument
      * @param previousItems number of previous items to retrieve. Will be ignored if lastEventId is set.
      * */
-    fun subscribe(listeners: FeedSubscriptionListeners, lastEventId: String? = null, previousItems: Int? =
+    @JvmOverloads fun subscribe(
+            listeners: FeedSubscriptionListeners,
+            lastEventId: String? = null,
+            previousItems: Int? =
  null) {
 
         val tokenParams: FeedsTokenParams? =
@@ -68,11 +75,12 @@ class Feed(val id: String, val instance: Instance, val tokenProvider: FeedsToken
      * @param onSuccess callback.
      * @param onError callback.
      * */
+    @JvmOverloads
     fun paginate(
-            cursor: String? = null,
-            limit: Int = 50,
             onSuccess: (FeedPaginationResponse) -> Unit,
-            onError: (elements.Error) -> Unit){
+            onError: (elements.Error) -> Unit,
+            cursor: String? = null,
+            limit: Int = 50){
 
 
         var urlBuilder = HttpUrl.Builder().scheme("https").host("pusherplatform.io")
@@ -120,7 +128,7 @@ class Feed(val id: String, val instance: Instance, val tokenProvider: FeedsToken
  * @param onRetrying called when the feed has disconnected, but is trying to reconnect. Can be used to update connection status. Optional.
  * @param onSubscribed called when the feed has successfully opened a subscription. Can be used to update connection status. Optional
  * */
-data class FeedSubscriptionListeners(
+data class FeedSubscriptionListeners @JvmOverloads constructor(
         val onOpen: OnOpenListener,
         val onItem: OnItemListener,
         val onError: OnErrorListener = OnErrorListener {  },

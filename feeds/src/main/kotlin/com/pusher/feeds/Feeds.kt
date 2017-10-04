@@ -19,13 +19,14 @@ import okhttp3.OkHttpClient
  * @param context your Android Application context. Used to detect and react to changes in connectivity when subscribing to a feed.
  * @param logLevel the default logging level.
  * */
-class Feeds(
+class Feeds
+    @JvmOverloads constructor(
         val instanceId: String,
+        val context: Context,
+
         val authEndpoint: String? = null,
         val authData: Map<String, String> = emptyMap(),
-        val logLevel: LogLevel = LogLevel.DEBUG,
-        val context: Context
-) {
+        val logLevel: LogLevel = LogLevel.DEBUG) {
     val httpClient = OkHttpClient()
 
     companion object {
@@ -71,11 +72,11 @@ class Feeds(
      * @param onSuccess callback
      * @param onFailure callback
      * */
-    fun list(
-            prefix: String? = null,
-            limit: Int? = null,
+    @JvmOverloads fun list(
             onSuccess: (List<FeedsListItem>) -> Unit,
-            onFailure: (elements.Error) -> Unit){
+            onFailure: (elements.Error) -> Unit,
+            prefix: String? = null,
+            limit: Int? = null){
 
         var urlBuilder = HttpUrl.Builder().scheme("https").host("pusherplatform.io")
         if(prefix != null) urlBuilder.addQueryParameter("prefix", prefix)
