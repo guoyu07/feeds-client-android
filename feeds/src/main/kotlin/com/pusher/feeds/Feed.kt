@@ -66,7 +66,6 @@ class Feed
                                 val item = Feeds.GSON.fromJson(event.body.asJsonObject["data"], FeedItem::class.java)
                                 listeners.onItem.onItem(item)
                             }
-
                         }
                 ),
                 tokenProvider = tokenProvider,

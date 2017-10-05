@@ -41,8 +41,7 @@ dependencies {
     implementation "android.arch.paging:runtime:1.0.0-alpha2"
     annotationProcessor "android.arch.lifecycle:compiler:1.0.0-alpha9-1"
 
-
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.51'
+    implementation 'com.jakewharton.timber:timber:4.5.1'
 }
 
 apply plugin: 'kotlin-android'
