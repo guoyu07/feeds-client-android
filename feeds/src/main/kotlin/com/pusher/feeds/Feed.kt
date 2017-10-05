@@ -1,5 +1,6 @@
 package com.pusher.feeds
 
+import com.google.gson.JsonElement
 import com.pusher.feeds.listeners.*
 import com.pusher.platform.Instance
 import com.pusher.platform.RequestOptions
@@ -92,8 +93,8 @@ class Feed
      * */
     @JvmOverloads
     fun paginate(
-            onSuccess: (FeedPaginationResponse) -> Unit,
-            onError: (elements.Error) -> Unit,
+            onSuccess: FeedItemsReceivedListener,
+            onError: OnErrorListener,
             cursor: String? = null,
             limit: Int = 50){
 
@@ -115,10 +116,10 @@ class Feed
                 ),
                 onSuccess = { response ->
                     if(response.code() == 200){
-                        onSuccess(Feeds.GSON.fromJson<FeedPaginationResponse>(response.body()!!.charStream(), FeedPaginationResponse::class.java))
+                        onSuccess.onItems(Feeds.GSON.fromJson<FeedPaginationResponse>(response.body()!!.charStream(), FeedPaginationResponse::class.java))
                     }
                     else {
-                        onError(ErrorResponse(
+                        onError.onError(ErrorResponse(
                                 statusCode = response.code(),
                                 headers = response.headers().toMultimap(),
                                 error = response.body()!!.string()
@@ -126,7 +127,7 @@ class Feed
                     }
                 },
                 onFailure = {
-                    onError(NetworkError(it.toString()))
+                    onError.onError(NetworkError(it.toString()))
                 }
         )
 
@@ -158,7 +159,7 @@ data class FeedSubscriptionListeners @JvmOverloads constructor(
  * @param created timestamp of this item's creation in seconds from Epoch.
  * @param data the data held in this feed item.
  * */
-data class FeedItem(val id: String, val created: Long, val data: Any)
+data class FeedItem(val id: String, val created: Long, val data: JsonElement)
 
 /**
  * A successful pagination response from Feed.paginate().

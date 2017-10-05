@@ -14,16 +14,22 @@
         android:text="Subscribe public"/>
 
     <Button
+        android:id="@+id/unsubscribe_public_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unsubscribe from public feed"/>
+
+    <Button
         android:id="@+id/subscribe_private_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Subscribe private"/>
 
     <Button
-        android:id="@+id/unsubscribe_btn"
+        android:id="@+id/unsubscribe_private_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Unsubscribe"/>
+        android:text="Unsubscribe from private feed"/>
 
     <Button
         android:id="@+id/list_feeds_btn"

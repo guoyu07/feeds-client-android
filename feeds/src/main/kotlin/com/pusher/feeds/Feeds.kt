@@ -3,6 +3,8 @@ package com.pusher.feeds
 import android.content.Context
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import com.pusher.feeds.listeners.FeedsReceivedListener
+import com.pusher.feeds.listeners.OnErrorListener
 import com.pusher.platform.Instance
 import com.pusher.platform.RequestOptions
 import com.pusher.platform.logger.AndroidLogger
@@ -73,8 +75,8 @@ class Feeds
      * @param onFailure callback
      * */
     @JvmOverloads fun list(
-            onSuccess: (List<FeedsListItem>) -> Unit,
-            onFailure: (elements.Error) -> Unit,
+            onSuccess: FeedsReceivedListener,
+            onFailure: OnErrorListener,
             prefix: String? = null,
             limit: Int? = null){
 
@@ -85,7 +87,7 @@ class Feeds
         instance.request(
                 options = RequestOptions(
                         method = "GET",
-                        path = "/feeds${ urlBuilder.build().encodedQuery() ?: "" }"
+                        path = "/feeds?${ urlBuilder.build().encodedQuery() ?: "" }"
                 ),
                 tokenProvider = createTokenProvider(),
                 tokenParams = FeedsTokenParams(
@@ -94,17 +96,19 @@ class Feeds
                 ),
                 onSuccess =  { response ->
                     if(response.code() == 200){
-                        onSuccess(GSON.fromJson<List<FeedsListItem>>(response.body()!!.charStream(), List::class.java))
+                        onSuccess.onFeedsReceived(GSON.fromJson<List<FeedsListItem>>(response.body()!!.charStream(), List::class.java))
                     }
                     else{
-                        onFailure(ErrorResponse(
+                        onFailure.onError(ErrorResponse(
                                 statusCode = response.code(),
                                 headers = response.headers().toMultimap(),
                                 error = "${response.body()}"
                         ))
                     }
                 },
-                onFailure = onFailure
+                onFailure = { onFailure.onError(it) }
         )
     }
+
+
 }
