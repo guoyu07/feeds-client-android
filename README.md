@@ -19,13 +19,28 @@ The SDK is written in Kotlin, but aimed to be as Java-friendly as possible.
 
 ### Installation & Setup
 
-- Add the client from Maven Central 
+Currently released as a snapshot. 
+Add the client from the Sonatype Snapshots repository.
+ 
+In your project-level `build.gradle` add this as 
+ 
+```groovy
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven{
+            url "https://oss.sonatype.org/content/repositories/snapshots"
+        }
+    }
+}
+```
+
+Then add the library to your module's dependencies.
 
 ```groovy
 implementation 'com.pusher:feeds-client-android:0.0.1-SNAPSHOT'
 ```
-
-Or clone this repository and include in your project.
 
 - Ensure you have these permissions in your app
 
