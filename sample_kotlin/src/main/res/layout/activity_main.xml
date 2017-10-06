@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.pusher.feeds.sample.MainActivity"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/subscribePublicButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Subscribe public"/>
+
+    <Button
+        android:id="@+id/unsubscribePublicButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unsubscribe from public feed"/>
+
+    <Button
+        android:id="@+id/subscribePrivateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Subscribe private"/>
+
+    <Button
+        android:id="@+id/unsubscribePrivateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unsubscribe from private feed"/>
+
+    <Button
+        android:id="@+id/listFeedsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="List Feeds"/>
+
+    <Button
+        android:id="@+id/paginatePublicButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Paginate public"/>
+
+    <Button
+        android:id="@+id/paginatePrivateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Paginate private feed"/>
+
+</LinearLayout>

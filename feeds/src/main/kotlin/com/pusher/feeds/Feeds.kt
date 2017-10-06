@@ -85,6 +85,10 @@ class Feeds
         if(prefix != null) urlBuilder.addQueryParameter("prefix", prefix)
         if(limit != null) urlBuilder.addQueryParameter("limit", limit.toString())
 
+        if(authEndpoint.isNullOrEmpty()){
+            throw IllegalStateException("AuthEndpoint must be set io list all the feeds.")
+        }
+
         instance.request(
                 options = RequestOptions(
                         method = "GET",
@@ -112,7 +116,7 @@ class Feeds
     }
 
     /**
-     * A Java builder helper to avoid passing everything in a constructor
+     * A Java utility to avoid passing everything in a constructor
      * */
     class Builder{
 
