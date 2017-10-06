@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
-
 apply plugin: 'kotlin-android'
+apply from: 'maven-push.gradle'
 
 android {
     compileSdkVersion 26
@@ -39,6 +39,6 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    api project(":pusher-platform")
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    api "com.pusher:pusher-platform:0.0.1-SNAPSHOT"
 }

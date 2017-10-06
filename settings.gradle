@@ -1,2 +1,1 @@
-include ':sample_kotlin', ':feeds', ':pusher-platform', ':sample_java'
-project(':pusher-platform').projectDir = new File('../pusher-platform-android/library')
+include ':sample_kotlin', ':feeds', ':sample_java'
