@@ -22,7 +22,7 @@ The SDK is written in Kotlin, but aimed to be as Java-friendly as possible.
 - Add the client from Maven Central 
 
 ```groovy
-implementation 'com.pusher:feeds-client-android:0.0.1'
+implementation 'com.pusher:feeds-client-android:0.0.1-SNAPSHOT'
 ```
 
 Or clone this repository and include in your project.
