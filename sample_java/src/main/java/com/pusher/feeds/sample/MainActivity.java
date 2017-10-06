@@ -39,7 +39,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Feeds feeds = new Feeds(INSTANCE_ID, getApplicationContext(), AUTH_ENDPONT, Collections.<String, String>emptyMap(), LogLevel.VERBOSE);
+        final Feeds feeds = new Feeds.Builder()
+                .setInstanceId(INSTANCE_ID)
+                .setContext(getApplicationContext())
+                .setAuthEndpoint(AUTH_ENDPONT)
+                .setLogLevel(LogLevel.VERBOSE)
+                .build();
 
         privateFeed = feeds.feed(PRIVATE_FEED);
         publicFeed = feeds.feed(PUBLIC_FEED);

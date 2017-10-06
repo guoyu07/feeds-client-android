@@ -29,6 +29,7 @@ class Feeds
         val authEndpoint: String? = null,
         val authData: Map<String, String> = emptyMap(),
         val logLevel: LogLevel = LogLevel.DEBUG) {
+
     val httpClient = OkHttpClient()
 
     companion object {
@@ -108,6 +109,56 @@ class Feeds
                 },
                 onFailure = { onFailure.onError(it) }
         )
+    }
+
+    /**
+     * A Java builder helper to avoid passing everything in a constructor
+     * */
+    class Builder{
+
+        private var instanceId: String? = null
+        private var context: Context? = null
+        private var authEndpoint: String? = null
+        private var authData: Map<String, String>? = emptyMap()
+        private var logLevel: LogLevel? = LogLevel.DEBUG
+
+        fun setInstanceId(instanceId: String): Builder {
+            this.instanceId = instanceId
+            return this
+        }
+        fun setContext(context: Context): Builder {
+            this.context = context
+            return this
+        }
+        fun setAuthEndpoint(authEndpoint: String): Builder {
+            this.authEndpoint = authEndpoint
+            return this
+        }
+        fun setAuthData(authData: Map<String, String>): Builder {
+            this.authData = authData
+            return this
+        }
+        fun setLogLevel(logLevel: LogLevel): Builder {
+            this.logLevel = logLevel
+            return this
+        }
+
+        fun build(): Feeds {
+            if(instanceId == null){
+                throw IllegalStateException("instanceID must be set!")
+            }
+            if(context == null){
+                throw IllegalStateException("context must be set!")
+            }
+
+            return Feeds(
+                    instanceId = instanceId!!,
+                    context = context!!,
+                    authEndpoint = authEndpoint,
+                    authData = authData!!,
+                    logLevel = logLevel!!
+            )
+        }
     }
 
 
