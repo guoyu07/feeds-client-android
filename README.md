@@ -155,6 +155,15 @@ feeds.list(
             )
 ```
 
+The response is a `List` of `FeedListItem` objects:
+
+```kotlin
+data class FeedsListItem(
+    val feedId: String, //unique feed identifier
+    val length: Int) //number of items in the feed
+```
+
+
 # License
 
 This SDK is released under the MIT license. See LICENSE for details.
