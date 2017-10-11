@@ -34,8 +34,7 @@ class Feed
     @JvmOverloads fun subscribe(
             listeners: FeedSubscriptionListeners,
             lastEventId: String? = null,
-            previousItems: Int? =
- null) {
+            previousItems: Int? = null) {
 
         val tokenParams: FeedsTokenParams? =
                 if(tokenProvider != null) FeedsTokenParams("feeds/$id/items")

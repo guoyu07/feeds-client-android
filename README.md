@@ -105,7 +105,18 @@ publicFeed.subscribe(
 
 ```
 
-The only mandatory listeners are `onOpen` and `onItem`.
+The only mandatory listeners are `onOpen` and `onItem`. Others are optional.
+
+A `FeedItem` that is received by the `OnItemListener` is of this format:
+
+```kotlin
+data class FeedItem(
+    val id: String, 
+    val created: Long, 
+    val data: JsonElement)
+```
+
+Where `data` is your published payload, `id` is unique for each item.
 
 ### Paginate though historic items in the feed
 
@@ -119,6 +130,20 @@ The only mandatory listeners are `onOpen` and `onItem`.
                         )
                     }
 ```
+
+The response is in the format of `FeedPaginationResponse`:
+
+```kotlin
+data class FeedPaginationResponse(
+        val items: List<FeedItem>,
+        val nextCursor: String?,
+        val remaining: Int
+)
+```
+
+Returned `items` length can be anywhere from 0 to `limit` as you specified above. 
+`nextCursor` points to the next known item in the feed, if it exists, and `remaining` tells you 
+how many items are remaining in this feed - older than the earliest received by this call.
 
 ### List all feeds
 
