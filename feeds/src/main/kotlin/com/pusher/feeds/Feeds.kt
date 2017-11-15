@@ -23,7 +23,7 @@ import okhttp3.OkHttpClient
  * */
 class Feeds
     @JvmOverloads constructor(
-        val instanceId: String,
+        val instanceLocator: String,
         val context: Context,
 
         val authEndpoint: String? = null,
@@ -39,7 +39,7 @@ class Feeds
     }
 
     val instance = Instance(
-            instanceId = instanceId,
+            instanceId = instanceLocator,
             serviceName = "feeds",
             serviceVersion = "v1",
             logger = AndroidLogger(threshold = logLevel),
@@ -120,14 +120,14 @@ class Feeds
      * */
     class Builder{
 
-        private var instanceId: String? = null
+        private var instanceLocator: String? = null
         private var context: Context? = null
         private var authEndpoint: String? = null
         private var authData: Map<String, String>? = emptyMap()
         private var logLevel: LogLevel? = LogLevel.DEBUG
 
-        fun setInstanceId(instanceId: String): Builder {
-            this.instanceId = instanceId
+        fun setInstanceLocator(instanceLocator: String): Builder {
+            this.instanceLocator = instanceLocator
             return this
         }
         fun setContext(context: Context): Builder {
@@ -148,7 +148,7 @@ class Feeds
         }
 
         fun build(): Feeds {
-            if(instanceId == null){
+            if(instanceLocator == null){
                 throw IllegalStateException("instanceID must be set!")
             }
             if(context == null){
@@ -156,7 +156,7 @@ class Feeds
             }
 
             return Feeds(
-                    instanceId = instanceId!!,
+                    instanceLocator = instanceLocator!!,
                     context = context!!,
                     authEndpoint = authEndpoint,
                     authData = authData!!,

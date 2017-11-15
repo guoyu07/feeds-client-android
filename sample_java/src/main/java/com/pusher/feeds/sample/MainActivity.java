@@ -26,7 +26,7 @@ import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String INSTANCE_ID = "v1:us1:8ab984e1-ea05-4c9e-8876-f3be088e2d01";
+    private static final String INSTANCE_LOCATOR = "";
     private static final String AUTH_ENDPONT = "http://10.0.2.2:3000/path/tokens";
     private static final String PUBLIC_FEED = "my-feed";
     private static final String PRIVATE_FEED = "private-my-feed";
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final Feeds feeds = new Feeds.Builder()
-                .setInstanceId(INSTANCE_ID)
+                .setInstanceLocator(INSTANCE_LOCATOR)
                 .setContext(getApplicationContext())
                 .setAuthEndpoint(AUTH_ENDPONT)
                 .setLogLevel(LogLevel.VERBOSE)

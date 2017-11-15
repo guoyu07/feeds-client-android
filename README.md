@@ -55,7 +55,7 @@ implementation 'com.pusher:feeds-client-android:0.0.1-SNAPSHOT'
 
 ```kotlin
     val feeds = Feeds(
-                instanceId = INSTANCE_ID,
+                instanceLocater = INSTANCE_LOCATOR,
                 context = applicationContext,
                 authEndpoint = AUTH_ENDPONT,
                 logLevel = LogLevel.VERBOSE
@@ -66,15 +66,15 @@ implementation 'com.pusher:feeds-client-android:0.0.1-SNAPSHOT'
 
 ```java
     Feeds feeds = new Feeds.Builder()
-        .setInstanceId(INSTANCE_ID)
+        .setInstanceLocator(INSTANCE_LOCATOR)
         .setContext(getApplicationContext())
         .setAuthEndpoint(AUTH_ENDPONT) 
         .setLogLevel(LogLevel.VERBOSE)
         .build();
 ```
 
-The mandatory parameters are the Instance ID - you get it from the Feeds Dashboard, and the Application Context. 
-Instance ID configures the SDK, and the context hooks into the broadcasts to re-establish a subscription.
+The mandatory parameters are the Instance Locater - you get it from the Feeds Dashboard, and the Application Context.
+Instance Locater configures the SDK, and the context hooks into the broadcasts to re-establish a subscription.
 
 Auth Endpoint is the location of your authenticator service - it is used for `list`, and subscribing to private feeds. 
 For more information on private feeds and authentication visit https://docs.pusher.com/feeds/concepts/private-feeds/

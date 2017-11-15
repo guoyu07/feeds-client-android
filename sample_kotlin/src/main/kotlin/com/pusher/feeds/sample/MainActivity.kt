@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
 
-        private val INSTANCE_ID = "v1:us1:8ab984e1-ea05-4c9e-8876-f3be088e2d01"
+        private val INSTANCE_LOCATER = ""
         private val AUTH_ENDPONT = "http://10.0.2.2:3000/path/tokens"
         private val PUBLIC_FEED = "my-feed"
         private val PRIVATE_FEED = "private-my-feed"
@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val feeds = Feeds(
-                instanceId = INSTANCE_ID,
+                instanceLocator = INSTANCE_LOCATER,
                 context = applicationContext,
                 authEndpoint = AUTH_ENDPONT,
                 logLevel = LogLevel.VERBOSE
